@@ -33,7 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     HWND hwnd = CreateWindowEx(
         0,                          // Optional window styles
         CLASS_NAME,                 // Window class
-        "Windows GUI Application",                       // Window text
+        NULL,                       // Window text
         WS_OVERLAPPEDWINDOW,        // Window style
         xPos, yPos, width, height,  // Size and position
         NULL,                       // Parent window
