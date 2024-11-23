@@ -6,57 +6,73 @@
 // Function prototype for window procedure
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// Define a struct to hold the character and its corresponding key
-struct KeyValue {
-    wchar_t banglaChar[20];  // Bangla character
-    char key[20];         // Corresponding keyboard key
+// Function to convert hex color string to RGB and return the RGB value
+COLORREF HexToRGB(const char* hexColor) {
+    int red, green, blue;
+    
+    // Convert the hexadecimal color string to RGB components
+    sscanf(hexColor + 1, "%2x%2x%2x", &red, &green, &blue);
+    
+    // Return the color in RGB format (COLORREF)
+    return RGB(red, green, blue);
+}
+
+// Define a structure to hold a Bangla character, its corresponding keyboard key, and its color
+struct KeyboardLayout {
+    wchar_t banglaChar[20];  // Wide-character array for Bangla characters
+    char key[20];            // Corresponding keyboard key.Store the text value (single character + null terminator)
+    char color[8];           // Store the color (HEX code as a string)
 };
 
 // Define an array of consonants (ব্যঞ্জনবর্ণ) for the keyboard layout
-struct KeyValue keyboardLayoutConsonants[] = {
-    {L"ক", "k"},
-    {L"খ", "K"},
-    {L"গ", "g"},
-    {L"ঘ", "G"},
-    {L"ঙ", "NG"},
-    {L"চ", "c"},
-    {L"ছ", "C"},
-    {L"জ", "j"},
-    {L"ঝ", "J"},
-    {L"ঞ", "NIO"},
-    {L"ট", "t"},
-    {L"ঠ", "T"},
-    {L"ড", "d"},
-    {L"ঢ", "D"},
-    {L"ণ", "N"},
-    {L"ত", "T"},
-    {L"থ", "th"},
-    {L"দ", "d"},
-    {L"ধ", "Dh"},
-    {L"ন", "n"},
-    {L"প", "p"},
-    {L"ফ", "P"},
-    {L"ব", "b"},
-    {L"ভ", "B"},
-    {L"ম", "m"},
-    {L"য", "z"},
-    {L"র", "r"},
-    {L"ল", "l"},
-    {L"শ", "S"},
-    {L"ষ", "M"},
-    {L"স", "s"},
-    {L"হ", "h"},
-    {L"ড়", "RR"},
-    {L"ঢ়", "RRh"},
-    {L"য়", "Y"},
-    {L"ৎ", "q"},
-    {L"ং", "ng"},
-    {L"ঃ", ":"},
-    {L"ঁ", "^"}
+struct KeyboardLayout keyboardLayoutConsonants[] = {
+    {L"ক", "k", "#b726bf"},
+    {L"খ", "K", "#b726bf"},
+    {L"গ", "g", "#b726bf"},
+    {L"ঘ", "G", "#b726bf"},
+    {L"ঙ", "umo", "#fc620b"},
+    {L"চ", "c", "#b726bf"},
+    {L"ছ", "C", "#b726bf"},
+    {L"জ", "j", "#b726bf"},
+    {L"ঝ", "J", "#b726bf"},
+    {L"ঞ", "nio", "#fc620b"},
+    {L"ট", "T", "#b726bf"},
+    {L"ঠ", "TT", "#b726bf"},
+    {L"ড", "D", "#b726bf"},
+    {L"ঢ", "DD", "#b726bf"},
+    {L"ণ", "N", "#b726bf"},
+    {L"ত", "t", "#b726bf"},
+    {L"থ", "tt", "#b726bf"},
+    {L"দ", "d", "#b726bf"},
+    {L"ধ", "dd", "#b726bf"},
+    {L"ন", "n", "#b726bf"},
+    {L"প", "p", "#b726bf"},
+    {L"ফ", "P", "#b726bf"},
+    {L"ব", "b,V", "#b726bf"},
+    {L"ভ", "B,v", "#b726bf"},
+    {L"ম", "m", "#b726bf"},
+    {L"য", "z", "#b726bf"},
+    {L"র", "r", "#b726bf"},
+    {L"ল", "l", "#b726bf"},
+    {L"শ", "S", "#b726bf"},
+    {L"ষ", "M", "#b726bf"},
+    {L"স", "s", "#b726bf"},
+    {L"হ", "h", "#fc620b"},
+    {L"ড়", "R", "#b726bf"},
+    {L"ঢ়", "RR", "#b726bf"},
+    {L"য়", "y", "#fc620b"},
+    {L"ৎ", "q", "#b726bf"},
+    {L"ং", "Q", "#b726bf"},
+    {L"ঃ", ":", "#fc620b"},
+    {L"ঁ", "^", "#fc620b"},
+    {L"ল", "L", "#b726bf"}
 };
+
 
 // Main function to draw the text and handle the keyboard layout
 void drawKeyboardLayout(HWND hwnd, HDC hdc) {
+    COLORREF primaryTextColor = HexToRGB("#070564"); // Convert Hex to RGB color
+
     // Create a font that supports Bangla
     HFONT hFont = CreateFontW(
         30,                     // Height of font
@@ -81,7 +97,7 @@ void drawKeyboardLayout(HWND hwnd, HDC hdc) {
     RECT rect = {10, 30, 45, 65};  // Define initial rectangle
     
     // Set up the brush and pen for drawing the rounded rectangles
-    HBRUSH hBrush = CreateSolidBrush(RGB(235, 171, 0)); // Background color: #EBAB00
+    HBRUSH hBrush = CreateSolidBrush( HexToRGB("#ebab00") ); // Box Background color: #EBAB00 in RGB
     HPEN hPenTransparent = CreatePen(PS_NULL, 0, RGB(0, 0, 0)); // Transparent pen (no border)
     HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
     HPEN hOldPen = (HPEN)SelectObject(hdc, hPenTransparent);
@@ -99,13 +115,20 @@ void drawKeyboardLayout(HWND hwnd, HDC hdc) {
             15                    // Height of the ellipse used to round the corners
         );
 
-        // Draw the Bangla text inside the rectangle
-        SetBkMode(hdc, TRANSPARENT); // Enable transparent background
+        SetBkMode(hdc, TRANSPARENT); // Set Bangla text background to transparent
+
+        SetTextColor(hdc, primaryTextColor ); // Set the Text color
+        // Draw the Bangla character in the rectangle with word wrapping and centered vertically and horizontally
         DrawTextW(hdc, keyboardLayoutConsonants[i].banglaChar, -1, &rect, DT_WORDBREAK | DT_VCENTER | DT_CENTER | DT_SINGLELINE);
 
+        // Extract the HEX color code from the struct and Convert Hex to RGB color for the corresponding key
+        SetTextColor(hdc, HexToRGB(keyboardLayoutConsonants[i].color) ); // Set the text color
         // Adjust the rectangle to draw the corresponding Latin character to the right of the Bangla text
         RECT khRect = {rect.right + 5, rect.top, rect.right + 50, rect.bottom}; // Shifted to the right
         DrawText(hdc, keyboardLayoutConsonants[i].key, -1, &khRect, DT_WORDBREAK | DT_VCENTER | DT_SINGLELINE);
+        
+        // SetTextColor(hdc, primaryTextColor ); // Restore the original PrimaryTextColor And Set the Text color
+
 
         // Move the rectangle down by 37 pixels
         rect.top += 37;
@@ -138,7 +161,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
-    wc.hbrBackground = CreateSolidBrush(RGB(235, 196, 82)); // background color #EBC452 in RGB
+    wc.hbrBackground = CreateSolidBrush( HexToRGB("#ebc452") ); // background color #EBC452 in RGB
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
     // Load the icon (optional)
@@ -198,13 +221,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             GetClientRect(hwnd, &clientRect);
 
             // Original top border (50px)
-            HPEN hPen = CreatePen(PS_SOLID, 45, RGB(240, 240, 240));
+            HPEN hPen = CreatePen(PS_SOLID, 45, HexToRGB("#f0f0f0") );
             HGDIOBJ oldPen = SelectObject(hdc, hPen);
             MoveToEx(hdc, clientRect.left, clientRect.top + 1, NULL);
             LineTo(hdc, clientRect.right, clientRect.top + 1);
             
             // Create 5px pen for left and right borders
-            HPEN hPen5px = CreatePen(PS_SOLID, 5, RGB(240, 240, 240));
+            HPEN hPen5px = CreatePen(PS_SOLID, 5, HexToRGB("#f0f0f0") );
             SelectObject(hdc, hPen5px);
             
             // Draw left border
@@ -216,7 +239,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             // LineTo(hdc, clientRect.right - 2, clientRect.bottom);
             
             // Create 2px pen for bottom border
-            HPEN hPen2px = CreatePen(PS_SOLID, 2, RGB(240, 240, 240));
+            HPEN hPen2px = CreatePen(PS_SOLID, 2, HexToRGB("#f0f0f0") );
             SelectObject(hdc, hPen2px);
             
             // Draw bottom border
