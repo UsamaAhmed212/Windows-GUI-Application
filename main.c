@@ -515,7 +515,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     RegisterClass(&wc);
 
     // Define window dimensions
-    const int width = 980;  // Window width
+    const int width = 1000;  // Window width
     const int height = 440; // Window height
 
     // Calculate center position
@@ -563,12 +563,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             RECT clientRect;
             GetClientRect(hwnd, &clientRect);
 
-            // Original top border (50px)
-            HPEN hPen = CreatePen(PS_SOLID, 45, HexToRGB("#f0f0f0") );
-            HGDIOBJ oldPen = SelectObject(hdc, hPen);
-            MoveToEx(hdc, clientRect.left, clientRect.top + 1, NULL);
-            LineTo(hdc, clientRect.right, clientRect.top + 1);
-            
             // Create 5px pen for left and right borders
             HPEN hPen5px = CreatePen(PS_SOLID, 5, HexToRGB("#f0f0f0") );
             SelectObject(hdc, hPen5px);
@@ -589,11 +583,197 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             MoveToEx(hdc, clientRect.left, clientRect.bottom - 1, NULL);
             LineTo(hdc, clientRect.right, clientRect.bottom - 1);
 
+
+            // // Create a pen for the box outline (optional)
+            // HPEN hPenBoxShadow = CreatePen(PS_SOLID, 1, RGB(255, 0, 0)); // outline
+            // SelectObject(hdc, hPenBoxShadow);
+
+            // Create a red brush for filling the box
+            HBRUSH hBrushBoxShadow = CreateSolidBrush( HexToRGB("#f5dd92") ); // Background color
+            SelectObject(hdc, hBrushBoxShadow);
+
+            // Select a null pen to remove the outline
+            HPEN hPenTransparent = CreatePen(PS_NULL, 0, RGB(0, 0, 0)); // Transparent pen (no border)
+            SelectObject(hdc, hPenTransparent);
+
+            // Define the position and size of the box (40x40)
+            int boxLeft = 795;  // X-coordinate of the top-left corner
+            int boxTop = 20;   // Y-coordinate of the top-left corner
+            int boxRight = boxLeft + 200; // X + width
+            int boxBottom = boxTop + 380; // Y + height
+
+            // Draw the rectangle
+            Rectangle(hdc, boxLeft, boxTop, boxRight, boxBottom);
+
+            // Clean up GDI objects
+            DeleteObject(hBrushBoxShadow);
+            DeleteObject(hPenTransparent);
+
+
+            // Load Custom Font
+            LPCWSTR customBanglaFont = L"./Geetanjali Academic/Geetanjali Academic.otf";
+            
+            AddFontResourceExW(customBanglaFont, FR_PRIVATE, 0);
+            
+            // Create a font that supports Bangla
+            HFONT hFont = CreateFontW(
+                35,                     // Height of font
+                0,                      // Width of font
+                0,                      // Angle of escapement
+                0,                      // Orientation angle
+                FW_BOLD,                // Font weight (bold)
+                FALSE,                  // Italic
+                FALSE,                  // Underline
+                FALSE,                  // Strikeout
+                DEFAULT_CHARSET,        // Character set identifier
+                OUT_OUTLINE_PRECIS,     // Output precision
+                CLIP_DEFAULT_PRECIS,    // Clipping precision
+                CLEARTYPE_QUALITY,      // Output quality
+                DEFAULT_PITCH,          // Pitch and family
+                L"Geetanjali Academic"  // Font name
+            );
+            // Select the font into the DC
+            HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
+
+            SetBkMode(hdc, TRANSPARENT); // Set Bangla text background to transparent
+
+            RECT rect = {10, 30, 797, 65};  // Define initial rectangle
+            RECT khRect = {rect.right + 5, rect.top, rect.right + 200, rect.bottom}; // Shifted to the right
+            DrawText(hdc, "Legend:", -1, &khRect, DT_WORDBREAK | DT_VCENTER | DT_SINGLELINE);
+
+            // Cleanup: Free memory and remove the font
+            RemoveFontResourceExW(customBanglaFont, FR_PRIVATE, 0);
+            SelectObject(hdc, hOldFont);
+            DeleteObject(hFont);
+
+            // Create a red brush for filling the box
+            HBRUSH hBrushBox1 = CreateSolidBrush( HexToRGB("#b726bf") ); // Background color
+            SelectObject(hdc, hBrushBox1);
+
+            // Select a null pen to remove the outline
+            HPEN hPenTransparent1 = CreatePen(PS_NULL, 0, RGB(0, 0, 0)); // Transparent pen (no border)
+            SelectObject(hdc, hPenTransparent1);
+
+            // Define the position and size of the box (40x40)
+            int boxLeft1 = 802;  // X-coordinate of the top-left corner
+            int boxTop1 = 70;    // Y-coordinate of the top-left corner
+            int boxRight1 = boxLeft1 + 18; // X + width
+            int boxBottom1 = boxTop1 + 18; // Y + height
+
+            // Draw the rectangle (filled without outline)
+            Rectangle(hdc, boxLeft1, boxTop1, boxRight1, boxBottom1);
+            
+            // Load Custom Font
+            LPCWSTR customBanglaFont1 = L"./Geetanjali Academic/Geetanjali Academic.otf";
+            
+            AddFontResourceExW(customBanglaFont1, FR_PRIVATE, 0);
+            
+            // Create a font that supports Bangla
+            HFONT hFont1 = CreateFontW(
+                27,                     // Height of font
+                0,                      // Width of font
+                0,                      // Angle of escapement
+                0,                      // Orientation angle
+                FW_BOLD,                // Font weight (bold)
+                FALSE,                  // Italic
+                FALSE,                  // Underline
+                FALSE,                  // Strikeout
+                DEFAULT_CHARSET,        // Character set identifier
+                OUT_OUTLINE_PRECIS,     // Output precision
+                CLIP_DEFAULT_PRECIS,    // Clipping precision
+                CLEARTYPE_QUALITY,      // Output quality
+                DEFAULT_PITCH,          // Pitch and family
+                L"Geetanjali Academic"  // Font name
+            );
+            // Select the font into the DC
+            HFONT hOldFont1 = (HFONT)SelectObject(hdc, hFont1);
+            
+            // Extract the HEX color code from the struct and Convert Hex to RGB color for the corresponding key
+            SetTextColor(hdc, HexToRGB("#b726bf") ); // Set the text color
+        
+            // Move the rectangle down by 37 pixels
+            RECT khRect1 = {rect.right + 25, rect.top + 62, rect.right + 200, rect.bottom}; // Shifted to the right
+            DrawText(hdc, "Case sensitive", -1, &khRect1, DT_WORDBREAK | DT_VCENTER | DT_SINGLELINE);
+            
+            // Cleanup: Free memory and remove the font
+            RemoveFontResourceExW(customBanglaFont1, FR_PRIVATE, 0);
+            SelectObject(hdc, hOldFont1);
+            DeleteObject(hFont1);
+
+
+            // Create a red brush for filling the box
+            HBRUSH hBrushBox2 = CreateSolidBrush( HexToRGB("#fc620b") ); // Background color
+            SelectObject(hdc, hBrushBox2);
+
+            // Select a null pen to remove the outline
+            HPEN hPenTransparent2 = CreatePen(PS_NULL, 0, RGB(0, 0, 0)); // Transparent pen (no border)
+            SelectObject(hdc, hPenTransparent2);
+
+            // Define the position and size of the box (40x40)
+            int boxLeft2 = 802;  // X-coordinate of the top-left corner
+            int boxTop2 = 95;    // Y-coordinate of the top-left corner
+            int boxRight2 = boxLeft2 + 18; // X + width
+            int boxBottom2 = boxTop2 + 18; // Y + height
+
+            // Draw the rectangle (filled without outline)
+            Rectangle(hdc, boxLeft2, boxTop2, boxRight2, boxBottom2);
+            
+            // Load Custom Font
+            LPCWSTR customBanglaFont2 = L"./Geetanjali Academic/Geetanjali Academic.otf";
+            
+            AddFontResourceExW(customBanglaFont2, FR_PRIVATE, 0);
+            
+            // Create a font that supports Bangla
+            HFONT hFont2 = CreateFontW(
+                27,                     // Height of font
+                0,                      // Width of font
+                0,                      // Angle of escapement
+                0,                      // Orientation angle
+                FW_BOLD,                // Font weight (bold)
+                FALSE,                  // Italic
+                FALSE,                  // Underline
+                FALSE,                  // Strikeout
+                DEFAULT_CHARSET,        // Character set identifier
+                OUT_OUTLINE_PRECIS,     // Output precision
+                CLIP_DEFAULT_PRECIS,    // Clipping precision
+                CLEARTYPE_QUALITY,      // Output quality
+                DEFAULT_PITCH,          // Pitch and family
+                L"Geetanjali Academic"  // Font name
+            );
+            // Select the font into the DC
+            HFONT hOldFont2 = (HFONT)SelectObject(hdc, hFont2);
+            
+            // Extract the HEX color code from the struct and Convert Hex to RGB color for the corresponding key
+            SetTextColor(hdc, HexToRGB("#fc620b") ); // Set the text color
+        
+            // Move the rectangle down by 37 pixels
+            RECT khRect2 = {rect.right + 25, rect.top + 112, rect.right + 200, rect.bottom}; // Shifted to the right
+            DrawText(hdc, "Not case sensitive", -1, &khRect2, DT_WORDBREAK | DT_VCENTER | DT_SINGLELINE);
+            
+            // Cleanup: Free memory and remove the font
+            RemoveFontResourceExW(customBanglaFont2, FR_PRIVATE, 0);
+            SelectObject(hdc, hOldFont2);
+            DeleteObject(hFont2);
+
+
+            // Clean up GDI objects
+            DeleteObject(hBrushBox1);
+            DeleteObject(hPenTransparent1);
+
+
+            // Original top border (50px)
+            HPEN hPen = CreatePen(PS_SOLID, 45, HexToRGB("#f0f0f0") );
+            HGDIOBJ oldPen = SelectObject(hdc, hPen);
+            MoveToEx(hdc, clientRect.left, clientRect.top + 1, NULL);
+            LineTo(hdc, clientRect.right, clientRect.top + 1);
+
             // Clean up
             SelectObject(hdc, oldPen);
             DeleteObject(hPen);
             DeleteObject(hPen5px);
             DeleteObject(hPen2px);
+
+
 
             // Call the drawKeyboardLayout function to render the keyboard layout on the window
             drawKeyboardLayoutConsonants(hwnd, hdc);  // Consonants (ব্যঞ্জনবর্ণ)
