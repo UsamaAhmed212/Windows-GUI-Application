@@ -524,15 +524,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // Create the window
     HWND hwnd = CreateWindowEx(
-        0,                          // Optional window styles
-        CLASS_NAME,                 // Window class
-        "Windows GUI Application",  // Window text
-        WS_OVERLAPPEDWINDOW,        // Window style
-        xPos, yPos, width, height,  // Size and position
-        NULL,                       // Parent window
-        NULL,                       // Menu
-        hInstance,                  // Instance handle
-        NULL                        // Additional application data
+        0,                              // Optional window styles
+        CLASS_NAME,                     // Window class
+        "Windows GUI Application",      // Window text
+        WS_OVERLAPPEDWINDOW &           // Base window style with title bar, minimize/maximize buttons, and resizable borders
+        ~(WS_MAXIMIZEBOX | WS_SIZEBOX), // Remove both maximize button (WS_MAXIMIZEBOX) and resizing capability (WS_SIZEBOX)
+        xPos, yPos, width, height,      // Size and position
+        NULL,                           // Parent window
+        NULL,                           // Menu
+        hInstance,                      // Instance handle
+        NULL                            // Additional application data
     );
 
     ShowWindow(hwnd, nShowCmd);
@@ -600,7 +601,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             int boxLeft = 795;  // X-coordinate of the top-left corner
             int boxTop = 20;   // Y-coordinate of the top-left corner
             int boxRight = boxLeft + 200; // X + width
-            int boxBottom = boxTop + 380; // Y + height
+            int boxBottom = boxTop + 390; // Y + height
 
             // Draw the rectangle
             Rectangle(hdc, boxLeft, boxTop, boxRight, boxBottom);
